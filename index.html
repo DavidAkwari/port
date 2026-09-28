@@ -74,6 +74,7 @@ body:has(dialog[open]){overflow:hidden}
 .dlg-head .more{margin-top:0;align-self:flex-start}
 .dlg h3{margin-top:1.4rem}
 .dlg ul.impact li{max-width:none}
+.dlg ul.impact li a{color:var(--ink);font-weight:600}
 figure{margin:0}
 .shots{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:.8rem}
 .shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid rgba(27,30,36,.15)}
@@ -96,19 +97,22 @@ figure{margin:0}
   <section id="about" class="card glass">
     <h1 class="sr">David Ogburu Akwari</h1>
     <h2>About me</h2>
-    <p class="lead">I am David Ogburu Akwari, a senior Information Technology student at Kennesaw State University with a concentration in Cyber Operations Security and a minor in Cybersecurity. I graduate in May 2027.</p>
-    <p>Since August 2023 I have worked the university IT service desk, fixing problems for students and staff and documenting what I learn. I am actively seeking an entry level security analyst or network infrastructure role where I can apply my hands on troubleshooting and threat mitigation skills.</p>
+    <p class="lead">Hi I'm David, an IT senior at Kennesaw State studying Cyber Operations Security.</p>
+    <p>I like figuring out how systems work, and since August 2023 I've done that full time on the university IT service desk, helping students and staff and keeping detailed notes so the next person doesn't start from zero. I graduate in May 2027 and I want an entry level role where I can keep learning: security analyst, network infrastructure, anything hands on.</p>
   </section>
 
   <section id="projects">
     <article class="card glass featured">
       <span class="badge">Featured project</span>
       <h3>Pi hole DNS sinkhole on a Raspberry Pi</h3>
-      <p><strong>Problem:</strong> Ads and promotions on my home network, starting with YouTube and a Roku TV.</p>
-      <p><strong>What I did:</strong> Configured static network settings and deployed Pi hole to filter ad domains and monitor local traffic.</p>
-      <p><strong>Result:</strong> Filters DNS for 6 devices against a 75,994 domain blocklist and logs every query. In the first sample, 10 of 858 queries were blocked (1.2%). Roku promotions disappeared; YouTube ads did not.</p>
-      <ul class="tags"><li>Linux</li><li>Raspberry Pi</li><li>DNS</li><li>Networking</li></ul>
-      <button class="more" type="button" data-open="pihole-dialog" aria-haspopup="dialog">Findings <span aria-hidden="true">+</span></button>
+      <p><strong>Problem:</strong> Ads and promotions on my home network, a Roku TV, YouTube, and a few other devices. My ISP's Xfinity gateway wouldn't let me set custom DNS, so a normal Pi hole install wasn't an option.</p>
+      <p><strong>What I did:</strong> Made the Pi hole the network's DHCP server (10.0.0.50 to 250) with a static IP of 10.0.0.16 over WiFi, and disabled DHCPv6 on the gateway so devices couldn't bypass filtering over IPv6. Stacked OISD and HaGeZi blocklists on top of the 75,994 domain base list, and wrote per device deny rules from live query logs.</p>
+      <p><strong>Result:</strong> Filters DNS for 6 devices with 10 of 858 queries blocked in the first sample (1.2%). Roku promotions disappeared. YouTube ads did not: Pi hole works at the DNS level, and YouTube serves ads from the same domains as its content.</p>
+      <ul class="tags"><li>Linux</li><li>Raspberry Pi</li><li>DNS</li><li>Networking</li><li>DHCP</li></ul>
+      <div style="margin-top:auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+        <a class="btn alt" style="margin:0" href="https://github.com/DavidAkwari/PiHoleProject" target="_blank" rel="noopener noreferrer">GitHub repo</a>
+        <button class="more" style="margin:0" type="button" data-open="pihole-dialog" aria-haspopup="dialog">Findings <span aria-hidden="true">+</span></button>
+      </div>
     </article>
 
     <div class="grid">
@@ -127,8 +131,8 @@ figure{margin:0}
         <p><strong>Result:</strong> Multi page archive detailing decades of Ballon d'Or winners and voting records, live at <a href="https://davidakwari.github.io/" target="_blank" rel="noopener noreferrer">davidakwari.github.io</a>.</p>
         <ul class="tags"><li>GitHub Pages</li><li>Web development</li></ul>
         <div style="margin-top:auto;display:flex;gap:.4rem;flex-wrap:wrap">
-          <a class="btn alt" href="https://davidakwari.github.io/" target="_blank" rel="noopener noreferrer">Live site</a>
-          <a class="btn alt" href="https://github.com/DavidAkwari/DavidAkwari.github.io" target="_blank" rel="noopener noreferrer">GitHub repo</a>
+          <a class="btn alt" style="margin:0" href="https://davidakwari.github.io/" target="_blank" rel="noopener noreferrer">Live site</a>
+          <a class="btn alt" style="margin:0" href="https://github.com/DavidAkwari/DavidAkwari.github.io" target="_blank" rel="noopener noreferrer">GitHub repo</a>
         </div>
       </article>
     </div>
@@ -182,22 +186,15 @@ figure{margin:0}
       <h2 id="pihole-title">Pi hole findings</h2>
       <button class="more close" type="button" aria-label="Close findings">Close <span aria-hidden="true">&times;</span></button>
     </div>
-    <h3>What I built</h3>
-    <p>A Raspberry Pi running Pi hole as a DNS filter for my home network. I configured static network settings, chose an upstream DNS provider, and turned on query logging so I could see what every device asks for. Because the ISP router restricts custom DNS modifications, I adjusted the Xfinity gateway DHCP configurations and enabled the Pi hole built in DHCP server to manage the IP pool. This automatically pointed all connected devices to the sinkhole for DNS resolution.</p>
-    <h3>A problem I hit</h3>
-    <p>During setup, <code>apt</code> refused to run because another process was holding the package lock. The terminal indicated the lock was held by process 6339 named packagekitd. I resolved this by manually terminating that background process to release the directory lock, allowing the installation command to execute cleanly.</p>
-    <h3>What I found</h3>
-    <ul class="impact">
-      <li>Pi hole works at the DNS level. When a device asks for the address of a known ad domain, Pi hole answers with nothing, so the ad never loads.</li>
-      <li>It cleaned up my Roku TV. The home screen promotions disappeared, and the idle screen fell back to a plain Roku brand card. That suggests Roku loads those promotions from separate ad domains that Pi hole can block.</li>
-      <li>It did not stop YouTube ads. YouTube delivers its ads through the same servers and stream as the video, so a DNS filter cannot block one without breaking the other.</li>
-      <li>Takeaway: DNS filtering works well against third party ad networks and poorly against ads served from the same place as the content.</li>
+    <ul class="impact" style="margin-top:1.4rem">
+      <li><strong>Full writeup:</strong> <a href="https://github.com/DavidAkwari/PiHoleProject" target="_blank" rel="noopener noreferrer">View repository on GitHub</a> for setup notes, configs, and automation scripts.</li>
+      <li><strong>The DHCP handover:</strong> Gateway wouldn't allow custom DNS, so the Pi became the DHCP server (10.0.0.50 to 250). Disabled stateless and stateful DHCPv6 on the gateway to force all traffic through the IPv4 sinkhole since modern devices will bypass you over IPv6 if you don't.</li>
+      <li><strong>Troubleshooting:</strong> Hit an <code>apt</code> lock conflict during setup because <code>packagekitd</code> was holding <code>/var/lib/apt/lists/lock</code>. Killed the process and moved on.</li>
+      <li><strong>Filtering stack:</strong> 75,994 domain base list, plus OISD and HaGeZi via Group Management Adlists. Per device policies and exact deny rules built from live query inspection.</li>
+      <li><strong>Known limitation:</strong> YouTube ads aren't blockable at the DNS layer since ads and content come from the same domains. This is expected behavior, not a misconfiguration.</li>
+      <li><strong>Next:</strong> Second Pi as failover DNS, and DNS over HTTPS upstream so the ISP can't see queries either.</li>
     </ul>
-    <h3>Numbers</h3>
-    <p>6 devices on the network, 75,994 domains on the blocklists, and 10 of 858 queries blocked (1.2%) in the first sample. Over a 7 day period, the Pi hole processed approximately 85,000 total queries and blocked around 25,000, bringing the network block rate to roughly 29%. Out of those blocked requests, over 15,000 originated exclusively from the Roku attempting to phone home to telemetry servers.</p>
     
-    <p><a class="btn" href="https://github.com/DavidAkwari/PiHoleProject" target="_blank" rel="noopener noreferrer">View repository on GitHub</a></p>
-
     <div class="shots-wrap">
       <h3>Screenshots</h3>
       <div class="shots">
