@@ -6,7 +6,6 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="David Ogburu Akwari Portfolio">
 <meta property="og:description" content="IT and cybersecurity student at Kennesaw State University. Projects and experience.">
-<meta name="twitter:card" content="summary_large_image">
 <!-- Preview image: save a 1200x630 PNG next to this file, then uncomment and use your full site address.
 <meta property="og:image" content="https://YOUR-SITE/preview.png"> -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b1e24'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23f4f6fa'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23f4f6fa' stroke-width='3' opacity='.75'/%3E%3Ccircle cx='32' cy='32' r='25' fill='none' stroke='%23f4f6fa' stroke-width='3' opacity='.4'/%3E%3C/svg%3E">
@@ -90,7 +89,7 @@ figure{margin:0}
   <a href="#projects">Projects</a>
   <a href="#experience">Experience</a>
   <a href="#contact">Contact</a>
-  <button id="mute" type="button" aria-pressed="false">Sound on</button>
+  <button id="mute" type="button" aria-pressed="true">Sound off</button>
 </nav>
 
 <main>
@@ -231,9 +230,9 @@ function step(){
 function start(){if(!running&&!reduce.matches){running=true;requestAnimationFrame(step);}}
 function ripple(x,y,power,r){if(reduce.matches)return;drop(x,y,power,r);start();}
 
-/* Low-pitch water droplet tone, with a persistent mute toggle */
-var muted=false,btn=document.getElementById('mute');
-try{muted=localStorage.getItem('muted')==='1';}catch(e){}
+/* Low-pitch water droplet tone, with a persistent mute toggle defaulting to muted */
+var muted=true,btn=document.getElementById('mute');
+try{var stored=localStorage.getItem('muted');if(stored!==null)muted=stored==='1';}catch(e){}
 function paintBtn(){btn.textContent=muted?'Sound off':'Sound on';btn.setAttribute('aria-pressed',String(muted));}
 paintBtn();
 btn.addEventListener('click',function(){muted=!muted;paintBtn();try{localStorage.setItem('muted',muted?'1':'0');}catch(e){}});
